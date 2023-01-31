@@ -16,9 +16,9 @@ namespace Secret
     {
         public void Main()
         {
-            Database._ConnectDB();
-
-            Database._CloseConnection();
+            //Example
+            Database.args = "INSERT INTO `pets` (pNo, pName, pCategory, pBreed) VALUES ('1', 'Micky', 'Dog', 'Husky')";
+            Database._Insert();
         }
     }
 }

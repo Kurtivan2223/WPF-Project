@@ -15,11 +15,14 @@ namespace Secret.Source
 
         public static MySqlCommand _Command = new MySqlCommand(args, _Connection);
 
-        public static void _ConnectDB()
+        private static void _GetConnectionString()
         {
-            Secret = "server=localhost;" +
-                "user=root;database=test;" +
-                "port=3306;";
+            Secret = "server=localhost;user=root;database=test;port=3306;";
+        }
+
+        private static void _ConnectDB()
+        {
+            _GetConnectionString();
 
             try
             {
@@ -27,11 +30,11 @@ namespace Secret.Source
             }
             catch (Exception _Exception)
             {
-                MessageBox.Show("L" + _Exception, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        public static void _CloseConnection()
+        private static void _CloseConnection()
         {
             try
             {
@@ -39,8 +42,23 @@ namespace Secret.Source
             }
             catch (Exception _Exception)
             {
-                MessageBox.Show("L" + _Exception, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
+        }
+
+        public static void _Insert()
+        {
+            try
+            {
+                _ConnectDB();
+                _Command.ExecuteNonQuery();
+            }
+            catch(Exception _Exception)
+            {
+                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            _CloseConnection();
         }
     }
 }
