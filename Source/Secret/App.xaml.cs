@@ -14,11 +14,6 @@ namespace Secret
     /// </summary>
     public partial class App : Application
     {
-        public void Main()
-        {
-            //Example
-            Database.args = "INSERT INTO `pets` (pNo, pName, pCategory, pBreed) VALUES ('1', 'Micky', 'Dog', 'Husky')";
-            Database._Insert();
-        }
+    
     }
 }

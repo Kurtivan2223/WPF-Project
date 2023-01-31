@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Secret.Source;
 
 namespace Secret
 {
@@ -23,6 +24,10 @@ namespace Secret
         public MainWindow()
         {
             InitializeComponent();
+
+            Database.args = "INSERT INTO `pets` (pNo, pName, pCategory, pBreed) VALUES ('1', 'Micky', 'Dog', 'Husky')";
+            Database._Insert();
+
         }
     }
 }
