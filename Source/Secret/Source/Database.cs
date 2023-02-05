@@ -3,6 +3,7 @@ using System.Data;
 using MySql.Data;
 using MySql.Data.MySqlClient;
 using System.Windows;
+using System.IO;
 using IniParser;
 using IniParser.Model;
 
@@ -23,33 +24,38 @@ namespace Secret.Source
             public static string Database { get; set; }
         }
 
+        protected static string root = @"Config\\";
+
+        protected static bool _DirectoryExists = (Directory.Exists(root)) ? true : false;
+
         public static string args { get; set; }
 
         protected static MySqlConnectionStringBuilder Secret = new MySqlConnectionStringBuilder();
 
-        
+        private static MySqlConnection _Connection = new MySqlConnection(Secret.ToString());
 
-        public static MySqlConnection _Connection = new MySqlConnection(Secret.ToString());
-
-        public static MySqlCommand _Command = new MySqlCommand(args, _Connection);
+        private static MySqlCommand _Command = new MySqlCommand(args, _Connection);
 
         private static void _GetConnectionString()
         {
-            var parser = new FileIniDataParser();
-
-            IniData data = parser.ReadFile("Config\\Data.ini");
-
-            try
+            if (_DirectoryExists)
             {
-                Settings.ServerName = data["DATABASE"]["Server"];
-                Settings.ServerPort = Convert.ToUInt32(data["DATABASE"]["Port"], 16);
-                Settings.UserName = data["DATABASE"]["User"];
-                Settings.Password = data["DATABASE"]["Password"];
-                Settings.Database = data["DATABASE"]["DBName"];
-            }
-            catch (Exception _Exception)
-            {
-                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                var parser = new FileIniDataParser();
+
+                IniData data = parser.ReadFile("Config\\Data.ini");
+
+                try
+                {
+                    Settings.ServerName = data["DATABASE"]["Server"];
+                    Settings.ServerPort = Convert.ToUInt32(data["DATABASE"]["Port"], 16);
+                    Settings.UserName = data["DATABASE"]["User"];
+                    Settings.Password = data["DATABASE"]["Password"];
+                    Settings.Database = data["DATABASE"]["DBName"];
+                }
+                catch (Exception _Exception)
+                {
+                    MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
         }
 
@@ -71,10 +77,11 @@ namespace Secret.Source
             try
             {
                 _Connection.Open();
+                Logs._Logs("Connected To Server.");
             }
             catch (Exception _Exception)
             {
-                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -83,10 +90,11 @@ namespace Secret.Source
             try
             {
                 _Connection.Close();
+                Logs._Logs("Connection Closed.");
             }
             catch (Exception _Exception)
             {
-                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -96,10 +104,11 @@ namespace Secret.Source
             {
                 _ConnectDB();
                 _Command.ExecuteNonQuery();
+                Logs._Logs("Executing SQL Insert Command.");
             }
             catch(Exception _Exception)
             {
-                MessageBox.Show(_Exception.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
 
             _CloseConnection();
