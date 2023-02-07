@@ -24,10 +24,6 @@ namespace Secret.Source
             public static string Database { get; set; }
         }
 
-        protected static string root = @"Config\\";
-
-        protected static bool _DirectoryExists = (Directory.Exists(root)) ? true : false;
-
         public static string args { get; set; }
 
         protected static MySqlConnectionStringBuilder Secret = new MySqlConnectionStringBuilder();
@@ -38,14 +34,15 @@ namespace Secret.Source
 
         private static void _GetConnectionString()
         {
-            if (_DirectoryExists)
+            if (Directory.Exists(@"Config\\"))
             {
-                var parser = new FileIniDataParser();
-
-                IniData data = parser.ReadFile("Config\\Data.ini");
-
+                
                 try
                 {
+                    var parser = new FileIniDataParser();
+                    
+                    IniData data = parser.ReadFile("Config\\Data.ini");
+                    
                     Settings.ServerName = data["DATABASE"]["Server"];
                     Settings.ServerPort = Convert.ToUInt32(data["DATABASE"]["Port"], 16);
                     Settings.UserName = data["DATABASE"]["User"];
