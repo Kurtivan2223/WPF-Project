@@ -27,6 +27,8 @@ namespace Secret.Source
             public static string Password { get; set; }
 
             public static string Database { get; set; }
+           
+            public static bool Pool { get; set; }
        }
        
        public static void _CreateConfiguration()
@@ -37,6 +39,31 @@ namespace Secret.Source
           ['DATABASE']['Password'] = '';
           ['DATABASE']['Database'] = 'User';
           ['CONFIG']['POOLING'] = _Bool.False;
+       }
+        
+       public static void _LoadConfig()
+       {
+           //check directory
+           if(Directory.Exists(@"Config\\"))
+           {
+                try
+                {
+                    var parser = new FileIniDataParser();
+                    
+                    IniData data = parser.ReadFile("Config\\Data.ini");
+                    
+                    Configuration.ServerName = data["DATABASE"]["Server"];
+                    Configuration.ServerPort = Convert.ToUInt32(data["DATABASE"]["Port"], 16);
+                    Configuration.UserName = data["DATABASE"]["User"];
+                    Configuration.Password = data["DATABASE"]["Password"];
+                    Configuration.Database = data["DATABASE"]["DBName"];
+                    Configuration.Pool = data["CONFIG"]["POOLING"];
+                }
+                catch (Exception _Exception)
+                {
+                    MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+           }
        }
     }
 }
