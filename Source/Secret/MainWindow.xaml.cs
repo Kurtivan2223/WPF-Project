@@ -24,10 +24,10 @@ namespace Secret
         public MainWindow()
         {
             InitializeComponent();
-
+            
+            Config._LoadConfig();
             Database.args = "INSERT INTO `pets` (pNo, pName, pCategory, pBreed) VALUES ('1', 'Micky', 'Dog', 'Husky')";
             Database._Insert();
-
         }
     }
 }
