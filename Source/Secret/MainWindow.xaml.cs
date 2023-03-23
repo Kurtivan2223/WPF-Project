@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Secret.Source;
+using System.Diagnostics;
+using System.IO;
 
 namespace Secret
 {
@@ -24,10 +26,25 @@ namespace Secret
         public MainWindow()
         {
             InitializeComponent();
-            
-            Config._LoadConfig();
-            Database.args = "INSERT INTO `pets` (pNo, pName, pCategory, pBreed) VALUES ('1', 'Micky', 'Dog', 'Husky')";
-            Database._Insert();
+
+            if (!Tools.DExists(@"Logs"))
+            {
+                Directory.CreateDirectory("Logs");
+            }
+
+            if (!Tools.DExists(@"Config"))
+            {
+                Directory.CreateDirectory("Config");
+            }
+
+            if (!Tools.FExists(@"Config\\Settings.ini"))
+            {
+                Logs.Write("Setting Up Configs!", 1);
+                Config.CreateIni();
+            }
+
+            Config.ReadIni();
+            Database.Build();
         }
     }
 }

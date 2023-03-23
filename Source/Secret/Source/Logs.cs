@@ -7,53 +7,36 @@ namespace Secret.Source
 {
     public class Logs
     {
-        #region Logs
-        protected static string root = @"Logs\\";
-
-        protected static bool _DirectoryExists = (Directory.Exists(root)) ? true : false;
-
-        protected static string _LogName { get; set; }
-
-        private static void _CreateFolder()
+        private static string GetTimeStamp(DateTime value)
         {
-            try
-            {
-                if(!Directory.Exists(root))
-                {
-                    Directory.CreateDirectory("Logs");
-                }
-            }
-            catch(IOException _Exception)
-            {
-                MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            return value.ToString("yyyy MM dd HH:mm:ss.ffff");
         }
 
-        private static void _ConstructFileName(string _Path)
+        private static string BuildLogName(DateTime value)
         {
-            string _Name = DateTime.Now.Day.ToString() + "_" + DateTime.Now.Month.ToString() + "_" + DateTime.Now.Year.ToString() + "_" + DateTime.Now.Hour.ToString() + "_" + DateTime.Now.Minute.ToString() + "_" + DateTime.Now.Second.ToString() + "_Logs.txt";
-           
-            _LogName = _Name;
+            return value.ToString("yyyy_MM_dd");
         }
 
-        //Single Use Bullshit
-        public static void _Logs(string _Message)
+        public static void Write(string Text, int code)
         {
-            _CreateFolder();
-            _ConstructFileName(root);
+            string timestamp = GetTimeStamp(DateTime.Now);
+            string LogName = BuildLogName(DateTime.Now);
 
-            try
+            switch (code)
             {
-                StreamWriter _File = new StreamWriter(root + _LogName, true);
-
-                _File.WriteLine("[Logs]" + DateTime.Now.ToString() + " " + _Message);
-                _File.Close();
-            }
-            catch(Exception _Exception)
-            {
-                MessageBox.Show(_Exception.Message.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                case 1:
+                    File.AppendAllText(@"Logs\\Logs_" + LogName + ".txt", "[INFO] " + timestamp + " " + Text + Environment.NewLine);
+                    break;
+                case 2:
+                    File.AppendAllText(@"Logs\\Logs_" + LogName + ".txt", "[ERROR] " + timestamp + " " + Text + Environment.NewLine);
+                    break;
+                case 3:
+                    File.AppendAllText(@"Logs\\Logs_" + LogName + ".txt", "[WARNING] " + timestamp + " " + Text + Environment.NewLine);
+                    break;
+                case 4:
+                    File.AppendAllText(@"Logs\\Logs_" + LogName + ".txt", "[DEBUG] " + timestamp + " " + Text + Environment.NewLine);
+                    break;
             }
         }
-        #endregion
     }
 }
